@@ -7,6 +7,14 @@ import os
 # Define la métrica
 my_metric = Gauge('nginx_traffic_requests', 'Solicitudes recibidas por minuto')
 
+def get_inode(path):
+    try:
+        return os.stat(path).st_ino
+    except FileNotFoundError:
+        return None
+    
+
+
 def count_lines(path_file):
     try:
         with open(path_file, 'r') as file_log:
@@ -21,14 +29,21 @@ def count_lines(path_file):
 def traffic_collector(log_path, interval):
     print(f"Iniciando la recolección de tráfico cada {interval} segundos...")
     previous_lines = count_lines(log_path)
+    previous_inode = get_inode(log_path)
 
     while True:
         time.sleep(interval)
+        current_inode = get_inode(log_path)
+
+        if current_inode != previous_inode:
+            print("El archivo de log ha sido rotado. Reseteando contador.")
+            previous_lines = 0  # Reinicia el conteo
+            previous_inode = current_inode
+
         current_lines = count_lines(log_path)
 
-        # Detecta si el log fue truncado o reiniciado
         if current_lines < previous_lines:
-            print("El log parece haber sido reiniciado. Reseteando contador.")
+            print("El log parece haber sido truncado. Reseteando contador.")
             delta = current_lines
         else:
             delta = current_lines - previous_lines
