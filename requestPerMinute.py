@@ -5,7 +5,7 @@ import time
 import os
 
 # Define la métrica
-my_metric = Gauge('nginx_traffic_requests', 'Solicitudes recibidas por minuto')
+my_metric = Gauge('nginx_http_requests', 'Solicitudes recibidas por minuto')
 
 def get_inode(path):
     try:
