@@ -17,7 +17,7 @@ def get_inode(path):
 
 def count_lines(path_file):
     try:
-        with open(path_file, 'r') as file_log:
+        with open(path_file, 'rb') as file_log:  # modo binario
             return sum(1 for _ in file_log)
     except FileNotFoundError:
         print(f"El archivo '{path_file}' no existe.")
