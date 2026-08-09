@@ -1,24 +1,26 @@
-# Request Export NGINX
+# NGINX Request Exporter
 
-Este proyecto proporciona un exportador personalizado para Prometheus que monitorea archivos de log de NGINX, calcula el número de solicitudes recibidas por intervalo de tiempo y expone estas métricas para ser consumidas por Prometheus.
+![Python](https://img.shields.io/badge/python-3.x-blue.svg)
+![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## Funcionalidades
+Un exportador ligero y eficiente para Prometheus diseñado para monitorear archivos de log de NGINX, calcular la frecuencia de solicitudes en tiempo real y exponer métricas clave para su análisis y visualización.
 
-- **Monitoreo de logs:** Cuenta el número de solicitudes en el archivo de log de NGINX en un intervalo definido.
-- **Métrica Prometheus:** Expone la métrica `nginx_http_requests` (Gauge).
-- **Soporte de Rotación de Logs:** Detecta cuando el archivo de log ha sido rotado o truncado y reinicia el contador automáticamente.
+## Características Principales
 
-## Modo de Uso
+- **Monitoreo en Tiempo Real:** Analiza continuamente el flujo de logs de NGINX.
+- **Métricas Prometheus:** Expone la métrica `nginx_http_requests` (Gauge) compatible con el ecosistema de monitoreo de Prometheus.
+- **Resiliencia:** Detección inteligente de rotación o truncamiento de archivos de log, asegurando la continuidad de la medición sin intervención manual.
+- **Configurable:** Ajusta fácilmente el intervalo de recolección y los puertos de exposición.
+
+## Guía de Inicio Rápido
+
+### Requisitos Previos
+- Python 3.x instalado.
+- Acceso de lectura al archivo de log de NGINX (`access.log`).
 
 ### Docker
-
-Puedes utilizar la imagen disponible en GitHub Packages:
-
-```bash
-docker pull ghcr.io/alejandromolinamedina/count_request_nginx:latest
-```
-
-Para ejecutar el contenedor, debes montar el archivo de log de NGINX de tu host dentro del contenedor:
+La forma más rápida de ejecutar el exportador es mediante nuestra imagen oficial:
 
 ```bash
 docker run -d \
@@ -29,22 +31,39 @@ docker run -d \
 ```
 
 ### Local (Python)
+1. Instala las dependencias necesarias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Ejecuta el script:
+   ```bash
+   python requestPerMinute.py --log /ruta/a/tu/nginx/access.log --port 8000 --interval 60
+   ```
 
-Si prefieres ejecutarlo localmente:
+### Argumentos de Línea de Comandos
+| Argumento | Descripción | Default |
+| :--- | :--- | :--- |
+| `--log` | Ruta absoluta al archivo access.log de NGINX | Requerido |
+| `--port` | Puerto para exponer métricas de Prometheus | 8000 |
+| `--interval` | Frecuencia de recolección en segundos | 60 |
 
-1. Asegúrate de tener instalado Python y las dependencias (puedes usar `pip install -r requirements.txt`).
-2. Ejecuta el script directamente:
+## Estructura del Proyecto
 
-```bash
-python requestPerMinute.py --log /ruta/a/tu/nginx/access.log --port 8000 --interval 60
+```text
+.
+├── Dockerfile          # Configuración para contenedorización
+├── Pipfile             # Gestión de dependencias de Python
+├── LICENSE             # Términos de la licencia
+├── README.md           # Documentación del proyecto
+├── requirements.txt    # Lista de dependencias del sistema
+└── requestPerMinute.py # Script principal de recolección de métricas
 ```
 
-### Argumentos
+## Soporte y Contribución
 
-- `--log`: Ruta completa al archivo de log de NGINX (requerido).
-- `--port`: Puerto para exponer las métricas de Prometheus (default: 8000).
-- `--interval`: Intervalo de recolección en segundos (default: 60).
+- **Reportar Errores:** Por favor, utiliza la sección de Issues del repositorio.
+- **Contribuciones:** Agradecemos las contribuciones para mejorar la estabilidad y nuevas funcionalidades. Consulta las políticas de contribución en el repositorio.
 
 ## Licencia
 
-Este proyecto está bajo la Licencia LICENSE.
+Este proyecto se distribuye bajo la licencia especificada en el archivo [LICENSE](./LICENSE).
