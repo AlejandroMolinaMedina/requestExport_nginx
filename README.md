@@ -1,28 +1,31 @@
 # NGINX Request Exporter
 
-![Python](https://img.shields.io/badge/python-3.x-blue.svg)
-![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+[![Python](https://img.shields.io/badge/python-3.x-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
-Un exportador ligero y eficiente para Prometheus diseñado para monitorear archivos de log de NGINX, calcular la frecuencia de solicitudes en tiempo real y exponer métricas clave para su análisis y visualización.
+Un exportador de métricas ligero y eficiente para Prometheus diseñado para monitorear archivos de log de NGINX, permitiendo la visibilidad en tiempo real del tráfico HTTP.
 
 ## Características Principales
 
-- **Monitoreo en Tiempo Real:** Analiza continuamente el flujo de logs de NGINX.
-- **Métricas Prometheus:** Expone la métrica `nginx_http_requests` (Gauge) compatible con el ecosistema de monitoreo de Prometheus.
-- **Resiliencia:** Detección inteligente de rotación o truncamiento de archivos de log, asegurando la continuidad de la medición sin intervención manual.
-- **Configurable:** Ajusta fácilmente el intervalo de recolección y los puertos de exposición.
+*   **Monitoreo en tiempo real:** Calcula el número de solicitudes recibidas por intervalo de tiempo.
+*   **Integración con Prometheus:** Expone la métrica `nginx_http_requests` mediante un endpoint HTTP.
+*   **Gestión inteligente de logs:** Detecta automáticamente la rotación o el truncamiento del archivo de log para evitar pérdida de datos o reinicios manuales.
+*   **Ligero y portable:** Desarrollado en Python, optimizado para ejecutarse como contenedor Docker o script standalone.
 
 ## Guía de Inicio Rápido
 
 ### Requisitos Previos
-- Python 3.x instalado.
-- Acceso de lectura al archivo de log de NGINX (`access.log`).
+*   Python 3.x instalado.
+*   Acceso de lectura al archivo `access.log` de tu instancia de NGINX.
+*   Docker (opcional, para despliegue en contenedores).
 
-### Docker
-La forma más rápida de ejecutar el exportador es mediante nuestra imagen oficial:
+### Despliegue con Docker
+Puedes utilizar la imagen precompilada disponible en GitHub Packages:
 
 ```bash
+docker pull ghcr.io/alejandromolinamedina/count_request_nginx:latest
+
 docker run -d \
   -v /var/log/nginx/access.log:/var/log/nginx/access.log:ro \
   -p 8000:8000 \
@@ -30,40 +33,45 @@ docker run -d \
   --log /var/log/nginx/access.log --port 8000 --interval 60
 ```
 
-### Local (Python)
+### Ejecución Local
 1. Instala las dependencias necesarias:
    ```bash
    pip install -r requirements.txt
    ```
-2. Ejecuta el script:
+2. Ejecuta el exportador:
    ```bash
-   python requestPerMinute.py --log /ruta/a/tu/nginx/access.log --port 8000 --interval 60
+   python requestPerMinute.py --log /var/log/nginx/access.log --port 8000 --interval 60
    ```
 
-### Argumentos de Línea de Comandos
-| Argumento | Descripción | Default |
-| :--- | :--- | :--- |
-| `--log` | Ruta absoluta al archivo access.log de NGINX | Requerido |
-| `--port` | Puerto para exponer métricas de Prometheus | 8000 |
-| `--interval` | Frecuencia de recolección en segundos | 60 |
+### Argumentos de Configuración
+*   `--log`: Ruta absoluta al archivo de log de NGINX (requerido).
+*   `--port`: Puerto de escucha para el servidor de métricas (default: `8000`).
+*   `--interval`: Intervalo de recolección en segundos (default: `60`).
 
 ## Estructura del Proyecto
 
 ```text
 .
-├── Dockerfile          # Configuración para contenedorización
-├── Pipfile             # Gestión de dependencias de Python
-├── LICENSE             # Términos de la licencia
+├── Dockerfile          # Configuración para despliegue en contenedores
+├── LICENSE             # Términos de licencia del proyecto
+├── Pipfile             # Dependencias del entorno de Python
 ├── README.md           # Documentación del proyecto
-├── requirements.txt    # Lista de dependencias del sistema
-└── requestPerMinute.py # Script principal de recolección de métricas
+├── requirements.txt    # Librerías necesarias para la ejecución
+└── requestPerMinute.py # Código fuente principal del exportador
 ```
 
-## Soporte y Contribución
+## Soporte y Documentación
+Si encuentras algún error o deseas solicitar una nueva funcionalidad, por favor utiliza la sección de [Issues](https://github.com/alejandromolinamedina/count_request_nginx/issues) en el repositorio. Asegúrate de incluir los logs relevantes y la versión de NGINX utilizada.
 
-- **Reportar Errores:** Por favor, utiliza la sección de Issues del repositorio.
-- **Contribuciones:** Agradecemos las contribuciones para mejorar la estabilidad y nuevas funcionalidades. Consulta las políticas de contribución en el repositorio.
+## Mantenimiento y Contribución
 
-## Licencia
+Este proyecto es de código abierto. Si deseas contribuir:
 
-Este proyecto se distribuye bajo la licencia especificada en el archivo [LICENSE](./LICENSE).
+1. Realiza un *fork* del repositorio.
+2. Crea una rama para tu mejora (`git checkout -b feature/nueva-funcionalidad`).
+3. Envía un *Pull Request* con una descripción clara de tus cambios.
+
+Para más información sobre el uso del proyecto, consulta los archivos de configuración incluidos en el repositorio.
+
+---
+*Este proyecto se distribuye bajo los términos de la Licencia LICENSE.*
