@@ -1,27 +1,35 @@
 # NGINX Request Exporter
 
-[![Python](https://img.shields.io/badge/python-3.x-blue.svg)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+Un exportador ligero y eficiente para Prometheus diseñado para monitorear archivos de log de NGINX, calcular la tasa de solicitudes y exponer métricas en tiempo real.
 
-Un exportador de métricas ligero y eficiente para Prometheus diseñado para monitorear archivos de log de NGINX, permitiendo la visibilidad en tiempo real del tráfico HTTP.
+![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 ## Características Principales
 
-*   **Monitoreo en tiempo real:** Calcula el número de solicitudes recibidas por intervalo de tiempo.
-*   **Integración con Prometheus:** Expone la métrica `nginx_http_requests` mediante un endpoint HTTP.
-*   **Gestión inteligente de logs:** Detecta automáticamente la rotación o el truncamiento del archivo de log para evitar pérdida de datos o reinicios manuales.
-*   **Ligero y portable:** Desarrollado en Python, optimizado para ejecutarse como contenedor Docker o script standalone.
+- **Monitoreo en tiempo real:** Analiza logs de NGINX para calcular solicitudes por intervalo.
+- **Métrica estandarizada:** Expone la métrica `nginx_http_requests` compatible con Prometheus.
+- **Resiliencia:** Detección automática de rotación y truncamiento de archivos de log.
+- **Versátil:** Soporte para ejecución nativa en Python o mediante contenedor Docker.
+
+## Estructura del Proyecto
+
+```text
+.
+├── Dockerfile          # Definición de la imagen del contenedor
+├── Pipfile             # Gestión de dependencias (Pipenv)
+├── LICENSE             # Términos de la licencia
+├── README.md           # Documentación del proyecto
+├── requirements.txt    # Dependencias del proyecto
+└── requestPerMinute.py # Lógica principal del exportador
+```
 
 ## Guía de Inicio Rápido
 
-### Requisitos Previos
-*   Python 3.x instalado.
-*   Acceso de lectura al archivo `access.log` de tu instancia de NGINX.
-*   Docker (opcional, para despliegue en contenedores).
+### Docker (Recomendado)
 
-### Despliegue con Docker
-Puedes utilizar la imagen precompilada disponible en GitHub Packages:
+Obtén la imagen desde GitHub Packages y ejecuta el contenedor montando el volumen de logs:
 
 ```bash
 docker pull ghcr.io/alejandromolinamedina/count_request_nginx:latest
@@ -34,44 +42,29 @@ docker run -d \
 ```
 
 ### Ejecución Local
-1. Instala las dependencias necesarias:
+
+1. Instala las dependencias:
    ```bash
    pip install -r requirements.txt
    ```
-2. Ejecuta el exportador:
+2. Inicia el script:
    ```bash
-   python requestPerMinute.py --log /var/log/nginx/access.log --port 8000 --interval 60
+   python requestPerMinute.py --log /ruta/a/tu/nginx/access.log --port 8000 --interval 60
    ```
 
-### Argumentos de Configuración
-*   `--log`: Ruta absoluta al archivo de log de NGINX (requerido).
-*   `--port`: Puerto de escucha para el servidor de métricas (default: `8000`).
-*   `--interval`: Intervalo de recolección en segundos (default: `60`).
+### Argumentos de configuración
 
-## Estructura del Proyecto
+| Argumento | Descripción | Default |
+| :--- | :--- | :--- |
+| `--log` | Ruta absoluta al archivo access.log de NGINX | Requerido |
+| `--port` | Puerto de escucha para métricas de Prometheus | 8000 |
+| `--interval` | Intervalo de recolección en segundos | 60 |
 
-```text
-.
-├── Dockerfile          # Configuración para despliegue en contenedores
-├── LICENSE             # Términos de licencia del proyecto
-├── Pipfile             # Dependencias del entorno de Python
-├── README.md           # Documentación del proyecto
-├── requirements.txt    # Librerías necesarias para la ejecución
-└── requestPerMinute.py # Código fuente principal del exportador
-```
+## Soporte y Contribución
 
-## Soporte y Documentación
-Si encuentras algún error o deseas solicitar una nueva funcionalidad, por favor utiliza la sección de [Issues](https://github.com/alejandromolinamedina/count_request_nginx/issues) en el repositorio. Asegúrate de incluir los logs relevantes y la versión de NGINX utilizada.
-
-## Mantenimiento y Contribución
-
-Este proyecto es de código abierto. Si deseas contribuir:
-
-1. Realiza un *fork* del repositorio.
-2. Crea una rama para tu mejora (`git checkout -b feature/nueva-funcionalidad`).
-3. Envía un *Pull Request* con una descripción clara de tus cambios.
+- **Reporte de errores:** Utiliza la sección de *Issues* en el repositorio para reportar bugs o solicitar nuevas funcionalidades.
+- **Contribuciones:** Las propuestas de mejora son bienvenidas mediante *Pull Requests*. Asegúrate de seguir las convenciones de estilo del código.
 
 Para más información sobre el uso del proyecto, consulta los archivos de configuración incluidos en el repositorio.
 
----
-*Este proyecto se distribuye bajo los términos de la Licencia LICENSE.*
+Este proyecto se distribuye bajo los términos de la licencia especificada en el archivo [LICENSE](./LICENSE).
