@@ -65,6 +65,6 @@ docker run -d \
 - **Reporte de errores:** Utiliza la sección de *Issues* en el repositorio para reportar bugs o solicitar nuevas funcionalidades.
 - **Contribuciones:** Las propuestas de mejora son bienvenidas mediante *Pull Requests*. Asegúrate de seguir las convenciones de estilo del código.
 
-## Licencia
+Para más información sobre el uso del proyecto, consulta los archivos de configuración incluidos en el repositorio.
 
 Este proyecto se distribuye bajo los términos de la licencia especificada en el archivo [LICENSE](./LICENSE).
